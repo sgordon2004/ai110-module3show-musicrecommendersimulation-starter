@@ -56,27 +56,26 @@ Our simulation simplifies this to focus on understanding how these rules combine
 - **User Context**: Features like energy and mood matter as much as genre
 
 **Finalized Algorithm Recipe**
-TOTAL SCORE = Categorical Score + Numerical Score
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**TOTAL SCORE = Categorical Score + Numerical Score**
 
-CATEGORICAL SCORE (Exact Match)
-├─ Mood Match:        +1.5 points (perfect match = 1.5, no match = 0)
-├─ Genre Match:       +1.0 points (perfect match = 1.0, no match = 0)
-└─ Subtotal:          0 to 2.5 points
+#### Categorical Score (Exact Match)
+- **Mood Match**: +1.5 points (perfect match = 1.5, no match = 0)
+- **Genre Match**: +1.0 points (perfect match = 1.0, no match = 0)
+- **Subtotal**: 0 to 2.5 points
 
-NUMERICAL SCORE (Gaussian Similarity)
-├─ Energy:            0 to 1.0 points
-│  └─ How close song energy is to user's target energy
-├─ Danceability:      0 to 1.0 points
-│  └─ How close song danceability is to user's target
-├─ Valence:           0 to 0.5 points
-│  └─ How close song valence is to user's target (less weight)
-└─ Subtotal:          0 to 2.5 points
+#### Numerical Score (Gaussian Similarity)
+- **Energy**: 0 to 1.0 points
+  - How close song energy is to user's target energy
+- **Danceability**: 0 to 1.0 points
+  - How close song danceability is to user's target
+- **Valence**: 0 to 0.5 points
+  - How close song valence is to user's target (less weight)
+- **Subtotal**: 0 to 2.5 points
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-FINAL SCORE:  0 to 5.0 points
-Recommend songs with score ≥ 2.5 (roughly 50% threshold)
+#### Final Score
+- **Total Range**: 0 to 5.0 points
+- **Recommendation Threshold**: Songs with score ≥ 2.5 (roughly 50% threshold)
 
 **Potential Dataset/Coverage Biases**
 - **Genre Imbalance**: If your song catalog has 60% pop and 10% jazz songs, pop songs will dominate recommendations even if the user prefers jazz.
