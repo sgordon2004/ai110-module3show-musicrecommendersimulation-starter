@@ -17,17 +17,43 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
+### Real-World Recommendation Principle
 
-Some prompts to answer:
+Real music recommenders work by matching songs to a user's taste profile using content-based filtering. They answer two key questions:
+1. **Scoring Rule**: For each song, "How similar is this to what the user likes?"
+2. **Ranking Rule**: For the full catalog, "In what order should we show these recommendations?"
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+Our simulation simplifies this to focus on understanding how these rules combine multiple features into meaningful suggestions.
 
-You can include a simple diagram or bullet list if helpful.
+### Our Design
+
+**Song Features:**
+- `genre` (categorical): pop, lofi, rock, ambient, jazz, synthwave, indie pop
+- `mood` (categorical): happy, chill, intense, relaxed, focused, moody
+- `energy` (numerical, 0–1): intensity and liveliness of the track
+- `danceability` (numerical, 0–1): how well-suited the song is for dancing
+- `valence` (numerical, 0–1): musical positivity and happiness
+- `tempo_bpm` (numerical): beats per minute (60–152)
+
+**UserProfile Stores:**
+- Preferred `genre` and `mood` (what the user likes)
+- Ideal `energy` level (user's preferred intensity)
+- Ideal `danceability` level (activity context)
+- Ideal `valence` (emotional tone preference)
+
+**Scoring Logic:**
+1. For categorical features (genre, mood): exact match = 1.0, no match = 0.0
+2. For numerical features (energy, danceability, valence): use Gaussian similarity—songs close to the user's preference score higher than distant ones
+3. Combine all feature scores using a weighted average (prioritizing mood and genre)
+
+**Ranking Rule:**
+- Sort all songs by combined score (highest first)
+- Recommend the top-ranked songs that exceed a minimum score threshold
+
+**What We Prioritize:**
+- **Simplicity**: Few features, interpretable logic
+- **Transparency**: Easy to explain why a song was recommended
+- **User Context**: Features like energy and mood matter as much as genre
 
 ---
 
