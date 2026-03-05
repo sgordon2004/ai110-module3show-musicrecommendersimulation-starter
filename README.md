@@ -55,6 +55,8 @@ Our simulation simplifies this to focus on understanding how these rules combine
 - **Transparency**: Easy to explain why a song was recommended
 - **User Context**: Features like energy and mood matter as much as genre
 
+---
+
 ### Finalized Algorithm Recipe
 
 **TOTAL SCORE = Categorical Score + Numerical Score**
