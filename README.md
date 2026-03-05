@@ -55,6 +55,38 @@ Our simulation simplifies this to focus on understanding how these rules combine
 - **Transparency**: Easy to explain why a song was recommended
 - **User Context**: Features like energy and mood matter as much as genre
 
+**Finalized Algorithm Recipe**
+TOTAL SCORE = Categorical Score + Numerical Score
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CATEGORICAL SCORE (Exact Match)
+├─ Mood Match:        +1.5 points (perfect match = 1.5, no match = 0)
+├─ Genre Match:       +1.0 points (perfect match = 1.0, no match = 0)
+└─ Subtotal:          0 to 2.5 points
+
+NUMERICAL SCORE (Gaussian Similarity)
+├─ Energy:            0 to 1.0 points
+│  └─ How close song energy is to user's target energy
+├─ Danceability:      0 to 1.0 points
+│  └─ How close song danceability is to user's target
+├─ Valence:           0 to 0.5 points
+│  └─ How close song valence is to user's target (less weight)
+└─ Subtotal:          0 to 2.5 points
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FINAL SCORE:  0 to 5.0 points
+Recommend songs with score ≥ 2.5 (roughly 50% threshold)
+
+**Potential Dataset/Coverage Biases**
+- **Genre Imbalance**: If your song catalog has 60% pop and 10% jazz songs, pop songs will dominate recommendations even if the user prefers jazz.
+- **Mood Clustering**: If most "chill" songs are lofi, recommending chill moods = always lofi.
+- **Artist Overrepresentation**: Nothing stops recommending 5 songs from the same artist.
+
+**Potential Algorithm Design Biases**
+- **"Average is Best"**: Gaussian similarity rewards songs close to user's target. Extreme songs always score lower, meaning that the algorithm misses users who actually want variety in energy, not just one level.
+- **Mood Dominance**: Mood = +1.5 points, which is very achievable. Genre = +1.0 points. A song can hit 2.5 points just from matching mood and genre alone. This means categorical matches might overshadow numerical fit.
+- **Valence Invisibility**: Valence = 0.5 weight (half of energy/danceability). Positive vs. negative songs barely matter. This system may miss emotional nuance.
 ---
 
 ## Getting Started
