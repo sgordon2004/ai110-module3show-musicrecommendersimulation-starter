@@ -73,9 +73,9 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     """
     Score a song based on how well it matches the user's preferences.
 
-    Scoring follows the finalized algorithm recipe:
-    - Categorical: mood match (+1.5), genre match (+1.0)
-    - Numerical: Gaussian similarity for energy, danceability, valence
+    Scoring follows the modified algorithm recipe:
+    - Categorical: mood match (+1.5), genre match (+0.5) [halved]
+    - Numerical: energy (+2.0) [doubled], danceability (+0.5) [halved], valence (+0.5)
     - Total: 0 to 5.0 points
 
     Returns:
@@ -89,8 +89,8 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
 
     # Categorical scores (exact match)
     if song['genre'] in user_prefs['favorite_genres']:
-        score += 1.0
-        reasons.append(f"Genre match: {song['genre']} (+1.0)")
+        score += 0.5
+        reasons.append(f"Genre match: {song['genre']} (+0.5)")
 
     if song['mood'] in user_prefs['favorite_moods']:
         score += 1.5
@@ -100,15 +100,15 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     # Sigma controls the width of the Gaussian; 0.3 means score drops to ~0.6 at distance 0.3
     sigma = 0.3
 
-    # Energy similarity (0 to 1.0 points)
+    # Energy similarity (0 to 2.0 points - doubled importance)
     energy_diff = abs(song['energy'] - user_prefs['target_energy'])
-    energy_score = math.exp(-(energy_diff ** 2) / (2 * sigma ** 2))
+    energy_score = 2.0 * math.exp(-(energy_diff ** 2) / (2 * sigma ** 2))
     score += energy_score
     reasons.append(f"Energy similarity: {energy_score:.2f} (+{energy_score:.2f})")
 
-    # Danceability similarity (0 to 1.0 points)
+    # Danceability similarity (0 to 0.5 points - halved to balance)
     danceability_diff = abs(song['danceability'] - user_prefs['target_danceability'])
-    danceability_score = math.exp(-(danceability_diff ** 2) / (2 * sigma ** 2))
+    danceability_score = 0.5 * math.exp(-(danceability_diff ** 2) / (2 * sigma ** 2))
     score += danceability_score
     reasons.append(f"Danceability similarity: {danceability_score:.2f} (+{danceability_score:.2f})")
 

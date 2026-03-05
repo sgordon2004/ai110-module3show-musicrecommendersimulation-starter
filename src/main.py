@@ -60,8 +60,8 @@ def main() -> None:
     # Choose which profile to test by uncommenting the desired one:
     # user_prefs = smooth_jazz_listener
     # user_prefs = party_paradox
-    # user_prefs = lofi_dancer
-    user_prefs = melancholy_minimalist
+    user_prefs = lofi_dancer
+    # user_prefs = melancholy_minimalist
 
     recommendations = recommend_songs(user_prefs, songs, k=5)
 
