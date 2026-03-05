@@ -81,6 +81,32 @@ Our simulation simplifies this to focus on understanding how these rules combine
 
 ---
 
+### Modified Algorithm Recipe (v2: Energy-Prioritized)
+
+**Experimental change:** Double energy importance, halve genre importance to test whether prioritizing how a song *feels* produces better recommendations than matching exact categories.
+
+**TOTAL SCORE = Categorical Score + Numerical Score**
+
+#### Categorical Score (Exact Match)
+- **Mood Match**: +1.5 points (unchanged)
+- **Genre Match**: +0.5 points (halved from 1.0)
+- **Subtotal**: 0 to 2.0 points
+
+#### Numerical Score (Gaussian Similarity)
+- **Energy**: 0 to 2.0 points (doubled from 1.0)
+  - How close song energy is to user's target energy
+- **Danceability**: 0 to 0.5 points (halved from 1.0 to balance)
+  - How close song danceability is to user's target
+- **Valence**: 0 to 0.5 points (unchanged)
+  - How close song valence is to user's target (less weight)
+- **Subtotal**: 0 to 3.0 points
+
+#### Final Score
+- **Total Range**: 0 to 5.0 points (maintained)
+- **Recommendation Threshold**: Songs with score ≥ 2.5 (unchanged)
+
+---
+
 ### Potential Biases
 
 **Potential Dataset/Coverage Biases**
