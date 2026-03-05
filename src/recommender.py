@@ -50,9 +50,76 @@ def load_songs(csv_path: str) -> List[Dict]:
     Loads songs from a CSV file.
     Required by src/main.py
     """
-    # TODO: Implement CSV loading logic
+    import csv
+
     print(f"Loading songs from {csv_path}...")
-    return []
+    songs = []
+
+    with open(csv_path, 'r') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            # Convert numerical values to appropriate types
+            row['id'] = int(row['id'])
+            row['energy'] = float(row['energy'])
+            row['tempo_bpm'] = float(row['tempo_bpm'])
+            row['valence'] = float(row['valence'])
+            row['danceability'] = float(row['danceability'])
+            row['acousticness'] = float(row['acousticness'])
+            songs.append(row)
+
+    return songs
+
+def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
+    """
+    Score a song based on how well it matches the user's preferences.
+
+    Scoring follows the finalized algorithm recipe:
+    - Categorical: mood match (+1.5), genre match (+1.0)
+    - Numerical: Gaussian similarity for energy, danceability, valence
+    - Total: 0 to 5.0 points
+
+    Returns:
+        Tuple of (total_score, list_of_reasons)
+        where reasons explain each component of the score
+    """
+    import math
+
+    score = 0.0
+    reasons = []
+
+    # Categorical scores (exact match)
+    if song['genre'] in user_prefs['favorite_genres']:
+        score += 1.0
+        reasons.append(f"Genre match: {song['genre']} (+1.0)")
+
+    if song['mood'] in user_prefs['favorite_moods']:
+        score += 1.5
+        reasons.append(f"Mood match: {song['mood']} (+1.5)")
+
+    # Gaussian similarity for numerical features
+    # Sigma controls the width of the Gaussian; 0.3 means score drops to ~0.6 at distance 0.3
+    sigma = 0.3
+
+    # Energy similarity (0 to 1.0 points)
+    energy_diff = abs(song['energy'] - user_prefs['target_energy'])
+    energy_score = math.exp(-(energy_diff ** 2) / (2 * sigma ** 2))
+    score += energy_score
+    reasons.append(f"Energy similarity: {energy_score:.2f} (+{energy_score:.2f})")
+
+    # Danceability similarity (0 to 1.0 points)
+    danceability_diff = abs(song['danceability'] - user_prefs['target_danceability'])
+    danceability_score = math.exp(-(danceability_diff ** 2) / (2 * sigma ** 2))
+    score += danceability_score
+    reasons.append(f"Danceability similarity: {danceability_score:.2f} (+{danceability_score:.2f})")
+
+    # Valence similarity (0 to 0.5 points, weighted less heavily)
+    valence_diff = abs(song['valence'] - user_prefs['target_valence'])
+    valence_score = 0.5 * math.exp(-(valence_diff ** 2) / (2 * sigma ** 2))
+    score += valence_score
+    reasons.append(f"Valence similarity: {valence_score:.2f} (+{valence_score:.2f})")
+
+    return score, reasons
+    
 
 def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tuple[Dict, float, str]]:
     """
@@ -61,4 +128,9 @@ def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tup
     """
     # TODO: Implement scoring and ranking logic
     # Expected return format: (song_dict, score, explanation)
-    return []
+    scored_songs = [
+        (song, score, "\n".join(reasons))
+        for song in songs
+        for score, reasons in [score_song(user_prefs, song)]
+    ]
+    return sorted(scored_songs, key=lambda x: x[1], reverse=True)[:k]
