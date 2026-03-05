@@ -87,6 +87,19 @@ Recommend songs with score ≥ 2.5 (roughly 50% threshold)
 - **"Average is Best"**: Gaussian similarity rewards songs close to user's target. Extreme songs always score lower, meaning that the algorithm misses users who actually want variety in energy, not just one level.
 - **Mood Dominance**: Mood = +1.5 points, which is very achievable. Genre = +1.0 points. A song can hit 2.5 points just from matching mood and genre alone. This means categorical matches might overshadow numerical fit.
 - **Valence Invisibility**: Valence = 0.5 weight (half of energy/danceability). Positive vs. negative songs barely matter. This system may miss emotional nuance.
+
+---
+
+## Example Output
+
+Below is an example of the system in action. This output shows recommendations for a user with the following profile:
+- **Preferred Genres**: Jazz, R&B, Hip-Hop, Reggae
+- **Preferred Moods**: Relaxed, Chill, Laid-Back
+
+![Music Recommender Results](terminal_output_example.png)
+
+The system scores each song based on how well it matches the user's genre and mood preferences, combined with numerical similarity scores for energy, danceability, and valence. In this example, you can see how songs like "Chit-Chat Lounge" (jazz, relaxed mood) and "Sweet Vibes" (reggae, laid-back mood) rank highly due to exact matches on both categorical preferences. The output also shows the individual scoring breakdown for each recommendation, making it transparent why certain songs were suggested.
+
 ---
 
 ## Getting Started
