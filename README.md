@@ -95,15 +95,63 @@ Our simulation simplifies this to focus on understanding how these rules combine
 
 ---
 
-## Example Output
+## Example Outputs
 
-Below is an example of the system in action. This output shows recommendations for a user with the following profile:
+Below are examples of the system in action across different user profiles. Each demonstrates how the recommender handles different preferences and edge cases.
+
+### Profile 1: Smooth Jazz Listener (Baseline)
+
+**User Profile:**
 - **Preferred Genres**: Jazz, R&B, Hip-Hop, Reggae
 - **Preferred Moods**: Relaxed, Chill, Laid-Back
+- **Target Energy**: 0.4 | **Target Danceability**: 0.6 | **Target Valence**: 0.7
 
-![Music Recommender Results](terminal_output_example.png)
+![Music Recommender Results - Smooth Jazz Listener](terminal_output_example.png)
 
-The system scores each song based on how well it matches the user's genre and mood preferences, combined with numerical similarity scores for energy, danceability, and valence. In this example, you can see how songs like "Chit-Chat Lounge" (jazz, relaxed mood) and "Sweet Vibes" (reggae, laid-back mood) rank highly due to exact matches on both categorical preferences. The output also shows the individual scoring breakdown for each recommendation, making it transparent why certain songs were suggested.
+**What This Tests:**
+This baseline profile shows the system working as expected. Songs like "Chit-Chat Lounge" (jazz, relaxed mood) and "Sweet Vibes" (reggae, laid-back mood) rank highly due to exact matches on both categorical preferences. The output demonstrates how the algorithm prioritizes mood and genre while using numerical features to fine-tune rankings.
+
+---
+
+### Profile 2: Party Paradox (Conflicting Preferences)
+
+**User Profile:**
+- **Preferred Genres**: Rock, Metal, Synthwave
+- **Preferred Moods**: Relaxed, Chill
+- **Target Energy**: 0.9 | **Target Danceability**: 0.8 | **Target Valence**: 0.3
+
+![Music Recommender Results - Party Paradox](party_paradox_output.png)
+
+**What This Tests:**
+This edge case tests contradictory preferences—the user wants high-energy, danceable music but also wants it to feel relaxed and chill. This reveals whether the system can handle conflicting signals or if mood dominance (1.5 points) overpowers the high energy preference. You'll notice songs that match the genre and mood get high scores despite conflicting with the energy target.
+
+---
+
+### Profile 3: Lo-Fi Dancer (Paradoxical Numerical Preferences)
+
+**User Profile:**
+- **Preferred Genres**: Lofi, Ambient, Indie-Pop
+- **Preferred Moods**: Focused, Chill
+- **Target Energy**: 0.2 | **Target Danceability**: 0.85 | **Target Valence**: 0.5
+
+![Music Recommender Results - Lo-Fi Dancer](lofi_dancer_output.png)
+
+**What This Tests:**
+This profile tests contradictory numerical preferences—the user wants very low energy (0.2) but very high danceability (0.85). This is a real-world paradox (like lofi hip-hop: chill but rhythmic). The recommender must balance Gaussian similarity across conflicting numerical targets. This stress-tests whether the algorithm can recommend music that satisfies paradoxical preferences or if it compromises on both.
+
+---
+
+### Profile 4: Melancholy Minimalist (Valence Invisibility Test)
+
+**User Profile:**
+- **Preferred Genres**: Jazz, Ambient, Indie-Pop
+- **Preferred Moods**: Moody, Intense
+- **Target Energy**: 0.3 | **Target Danceability**: 0.1 | **Target Valence**: 0.05
+
+![Music Recommender Results - Melancholy Minimalist](melancholy_minimalist_output.png)
+
+**What This Tests:**
+This extreme edge case tests whether very low valence (0.05—very sad, melancholic music) matters. Since valence only has 0.5 weight in the algorithm, this profile reveals if the system treats valence as nearly invisible. Songs that match mood and genre may score highly even if they don't match the extreme sadness preference, demonstrating the potential "Valence Invisibility" bias discussed in the algorithm section.
 
 ---
 
