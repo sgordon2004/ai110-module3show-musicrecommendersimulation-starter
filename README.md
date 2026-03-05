@@ -79,6 +79,10 @@ Our simulation simplifies this to focus on understanding how these rules combine
 - **Total Range**: 0 to 5.0 points
 - **Recommendation Threshold**: Songs with score ≥ 2.5 (roughly 50% threshold)
 
+---
+
+### Potential Biases
+
 **Potential Dataset/Coverage Biases**
 - **Genre Imbalance**: If your song catalog has 60% pop and 10% jazz songs, pop songs will dominate recommendations even if the user prefers jazz.
 - **Mood Clustering**: If most "chill" songs are lofi, recommending chill moods = always lofi.
